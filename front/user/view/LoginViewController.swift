@@ -25,7 +25,7 @@ class LoginViewController: UIViewController {
             print("로그인 성공, 토큰:", response.id)
             print("로그인 성공, 토큰:", response.userInfo)
             // TODO: 토큰 저장 및 화면 전환
-            self?.showAlert(message: "로그인 성공!")
+            self?.showAlert(message: "로그인 성공!~~~~~~")
         }
         
         viewModel.onLoginFailure = { [weak self] errorMessage in
