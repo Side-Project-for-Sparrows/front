@@ -8,7 +8,7 @@
 import Foundation
 
 class SigninService {
-    private let baseURL = "http://unstoppableworm.iptime.org" // 서버 URL 변경
+    private let baseURL = AppConfig.shared.baseURL // 서버 URL 변경
     
     func signin(request: SigninRequest, completion: @escaping (Result<AuthResponse, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/user/auth/join") else {

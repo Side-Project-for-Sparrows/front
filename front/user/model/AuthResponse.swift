@@ -3,12 +3,12 @@
 import Foundation
 
 struct AuthResponse: Decodable {
-    let id: Int
+    let id: Int64
     let userInfo: UserInfo
 }
 
 struct UserInfo: Decodable {
-    let id: Int
+    let id: Int64
     let loginId: String
     let nickname: String
     let userType: String
