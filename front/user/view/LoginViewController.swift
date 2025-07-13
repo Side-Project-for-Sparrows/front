@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import KeychainAccess
 
 class LoginViewController: UIViewController {
     
     @IBOutlet weak var idTextField: UITextField!
     @IBOutlet weak var pwTextField: UITextField!
+    @IBOutlet weak var signupButton: UIButton!
     
     private let viewModel = LoginViewModel()
     
@@ -24,12 +26,27 @@ class LoginViewController: UIViewController {
         viewModel.onLoginSuccess = { [weak self] response in
             print("로그인 성공, 토큰:", response.id)
             print("로그인 성공, 토큰:", response.userInfo)
-            // TODO: 토큰 저장 및 화면 전환
-            self?.showAlert(message: "로그인 성공!~~~~~~!!@!@")
+            // 로그인 정보 저장
+            // accessToken, refreshToken은 Keychain, userId, nickname, userType은 UserDefaults
+            let keychain = Keychain(service: Bundle.main.bundleIdentifier ?? "sparrows")
+                .accessibility(.afterFirstUnlock)
+            keychain["accessToken"] = response.userInfo.accessToken
+            keychain["refreshToken"] = response.userInfo.refreshToken
+            UserDefaults.standard.set(response.userInfo.id, forKey: "userId")
+            UserDefaults.standard.set(response.userInfo.nickname, forKey: "nickname")
+            UserDefaults.standard.set(response.userInfo.userType, forKey: "userType")
+            self?.showAlert(message: "로그인 성공, 나중에 alert 지우고 메인 페이지로 이동하게 연결하면 됨.")
         }
         
         viewModel.onLoginFailure = { [weak self] errorMessage in
-            self?.showAlert(message: errorMessage)
+            // JSON에서 message만 추출
+            if let data = errorMessage.data(using: .utf8),
+               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let message = json["message"] as? String {
+                self?.showToast(message: message)
+            } else {
+                self?.showAlert(message: "서버에 문제가 발생했습니다. 잠시후 다시 시도해주세요.")
+            }
         }
     }
     
@@ -40,10 +57,13 @@ class LoginViewController: UIViewController {
         viewModel.login()
     }
     
-    private func showAlert(message: String) {
-        let alert = UIAlertController(title: "알림", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default))
-        present(alert, animated: true)
+    @IBAction func signupButtonTapped(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let signinVC = storyboard.instantiateViewController(withIdentifier: "SigninViewController") as? SigninViewController {
+            signinVC.modalPresentationStyle = .fullScreen
+            present(signinVC, animated: true)
+        }
     }
+
 }
 
