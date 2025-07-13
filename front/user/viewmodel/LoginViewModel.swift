@@ -14,7 +14,7 @@ class LoginViewModel {
     var pw: String = ""
     
     // Output
-    var onLoginSuccess: ((LoginResponse) -> Void)?
+    var onLoginSuccess: ((AuthResponse) -> Void)?
     var onLoginFailure: ((String) -> Void)?
     
     func login() {
@@ -24,7 +24,15 @@ class LoginViewModel {
         }
         
         let request = LoginRequest(id: id, pw: pw)
-        AuthService.login(request: request) { [weak self] result in
+        print(request)
+        AuthService.login(request: request) { [weak self] result, rawData in
+            if let rawData = rawData, let rawString = String(data: rawData, encoding: .utf8) {
+                print("[로그인 응답 raw data] \n\(rawString)")
+                if case .failure(_) = result {
+                    self?.onLoginFailure?(rawString)
+                    return
+                }
+            }
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):

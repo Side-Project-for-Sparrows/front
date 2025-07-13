@@ -8,8 +8,8 @@
 import Alamofire
 
 struct AuthService {
-    static func login(request: LoginRequest, completion: @escaping (Result<LoginResponse, Error>) -> Void) {
-        let url = "http://localhost:8080/api/auth/login"
+    static func login(request: LoginRequest, completion: @escaping (Result<AuthResponse, Error>, Data?) -> Void) {
+        let url = "http://unstoppableworm.iptime.org/user/auth/login"
         
         AF.request(url,
                    method: .post,
@@ -17,8 +17,8 @@ struct AuthService {
                    encoder: JSONParameterEncoder.default,
                    headers: ["Content-Type": "application/json"])
         .validate()
-        .responseDecodable(of: LoginResponse.self) { response in
-            completion(response.result.mapError { $0 as Error })
+        .responseDecodable(of: AuthResponse.self) { response in
+            completion(response.result.mapError { $0 as Error }, response.data)
         }
     }
 }
