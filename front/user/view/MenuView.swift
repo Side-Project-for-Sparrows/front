@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 //
 //  MenuView.swift
 //  front
@@ -8,7 +6,6 @@
 //
 
 import Foundation
->>>>>>> c8b170f (feat: route)
 import UIKit
 
 class MenuView: UICollectionViewController, UICollectionViewDelegateFlowLayout {
@@ -48,5 +45,5 @@ class MenuView: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 100, height: 100)
     }
-} 
+}
 
