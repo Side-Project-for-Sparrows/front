@@ -23,7 +23,7 @@ struct BoardListScreen: View {
                 } else if let boards = viewModel.boards {
                     BoardListView(boards: boards)
                 } else {
-                    Text("아직 아무 데이터도 없음") // 👈 이걸로 최소한 한 뷰가 그려지도록
+                    Text("아직 아무 데이터도 없음")
                 }
             }
             .navigationTitle("내 게시판")
@@ -32,7 +32,7 @@ struct BoardListScreen: View {
                     Button(action: {
                         showingCreateView = true
                     }) {
-                        Image(systemName: "square.and.pencil") // ✏️ 글쓰기 아이콘
+                        Image(systemName: "square.and.pencil")
                     }
                 }
             }

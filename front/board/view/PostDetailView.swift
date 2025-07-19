@@ -13,10 +13,7 @@ struct PostDetailView: View {
                     RemoteImageView(imageKey: image.key)
                 }
 
-                Text("댓글").font(.headline)
-                ForEach(post.commentDetailDtos, id: \.id) { comment in
-                    Text(comment.content)
-                }
+                CommentListView(postId: post.postId)
             }
             .padding()
         }
