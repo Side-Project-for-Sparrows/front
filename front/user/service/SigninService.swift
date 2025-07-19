@@ -8,10 +8,8 @@
 import Foundation
 
 class SigninService {
-    private let baseURL = AppConfig.shared.baseURL // 서버 URL 변경
-    
     func signin(request: SigninRequest, completion: @escaping (Result<AuthResponse, Error>) -> Void) {
-        guard let url = URL(string: "\(baseURL)/user/auth/join") else {
+        guard let url = URL(string: "\(AppConfig.shared.baseURL)/user/auth/join") else {
             completion(.failure(NetworkError.invalidURL))
             return
         }
@@ -68,7 +66,7 @@ class SigninService {
     }
     
     func searchSchools(query: String, completion: @escaping (Result<[School], Error>) -> Void) {
-        guard let url = URL(string: "\(baseURL)/index/school?q=\(query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")") else {
+        guard let url = URL(string: "\(AppConfig.shared.baseURL)/index/school?q=\(query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")") else {
             completion(.failure(NetworkError.invalidURL))
             return
         }

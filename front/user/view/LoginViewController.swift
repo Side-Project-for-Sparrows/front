@@ -13,6 +13,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var idTextField: UITextField!
     @IBOutlet weak var pwTextField: UITextField!
     @IBOutlet weak var signupButton: UIButton!
+    @IBOutlet weak var loginErrorLabel: UILabel!
     
     private let viewModel = LoginViewModel()
     
@@ -48,13 +49,29 @@ class LoginViewController: UIViewController {
                 self?.showAlert(message: "서버에 문제가 발생했습니다. 잠시후 다시 시도해주세요.")
             }
         }
+
+        viewModel.onValidationError = { [weak self] field, message in
+            switch field {
+            case "id":
+                self?.loginErrorLabel.text = message
+                self?.loginErrorLabel.isHidden = (message == nil)
+            default:
+                break
+            }
+        }
+    
     }
     
     @IBAction func loginButtonTapped(_ sender: UIButton) {
         viewModel.id = idTextField.text ?? ""
         viewModel.pw = pwTextField.text ?? ""
         
-        viewModel.login()
+        // 유효성 검사
+        let isValid = viewModel.validateInputs()
+        if isValid {
+            loginErrorLabel.isHidden = true
+            viewModel.login()
+        }
     }
     
     @IBAction func signupButtonTapped(_ sender: UIButton) {

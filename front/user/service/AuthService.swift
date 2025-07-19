@@ -8,8 +8,8 @@
 import Alamofire
 
 struct AuthService {
-    static func login(request: LoginRequest, completion: @escaping (Result<AuthResponse, Error>, Data?) -> Void) {
-        let url = "http://unstoppableworm.iptime.org/user/auth/login"
+    func login(request: LoginRequest, completion: @escaping (Result<AuthResponse, Error>, Data?) -> Void) {
+        let url = "\(AppConfig.shared.baseURL)/user/auth/login"
         
         AF.request(url,
                    method: .post,

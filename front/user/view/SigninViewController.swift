@@ -39,7 +39,6 @@ class SigninViewController: UIViewController, CLLocationManagerDelegate {
         bindViewModel()
         setupLocationManager()
         hideAllValidationErrors()
-        //        selectedSchoolLabel.isHidden = true
     }
     
     // MARK: - Setup
@@ -70,7 +69,25 @@ class SigninViewController: UIViewController, CLLocationManagerDelegate {
         }
         
         viewModel.onValidationError = { [weak self] field, message in
-            self?.showValidationError(field: field, message: message)
+            switch field {
+            case "loginId":
+                self?.loginIdErrorLabel.text = message
+                self?.loginIdErrorLabel.isHidden = (message == nil)
+            case "password":
+                self?.passwordErrorLabel.text = message
+                self?.passwordErrorLabel.isHidden = (message == nil)
+            case "confirmPassword":
+                self?.confirmPasswordErrorLabel.text = message
+                self?.confirmPasswordErrorLabel.isHidden = (message == nil)
+            case "nickname":
+                self?.nicknameErrorLabel.text = message
+                self?.nicknameErrorLabel.isHidden = (message == nil)
+            case "school":
+                self?.schoolErrorLabel.text = message
+                self?.schoolErrorLabel.isHidden = (message == nil)
+            default:
+                break
+            }
         }
         
         viewModel.onValidationSuccess = { [weak self] in
@@ -105,7 +122,7 @@ class SigninViewController: UIViewController, CLLocationManagerDelegate {
         viewModel.nickname = nicknameTextField.text ?? ""
         
         // 유효성 검사
-        let isValid = validateInputs()
+        let isValid = viewModel.validateInputs()
         if isValid {
             hideAllValidationErrors()
             viewModel.signin()
@@ -133,90 +150,12 @@ class SigninViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
-    // MARK: - Validation
-    private func validateInputs() -> Bool {
-        var isValid = true
-        
-        // 아이디
-        if viewModel.loginId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            loginIdErrorLabel.text = "아이디를 입력해주세요."
-            loginIdErrorLabel.isHidden = false
-            isValid = false
-        } else {
-            loginIdErrorLabel.isHidden = true
-        }
-        
-        // 비밀번호
-        if viewModel.password.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            passwordErrorLabel.text = "비밀번호를 입력해주세요."
-            passwordErrorLabel.isHidden = false
-            isValid = false
-        } else {
-            passwordErrorLabel.isHidden = true
-        }
-        
-        // 비밀번호 확인
-        if viewModel.confirmPassword.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            confirmPasswordErrorLabel.text = "비밀번호 확인을 입력해주세요."
-            confirmPasswordErrorLabel.isHidden = false
-            isValid = false
-        } else if viewModel.password != viewModel.confirmPassword {
-            confirmPasswordErrorLabel.text = "비밀번호가 다릅니다."
-            confirmPasswordErrorLabel.isHidden = false
-            isValid = false
-        } else {
-            confirmPasswordErrorLabel.isHidden = true
-        }
-        
-        // 닉네임
-        if viewModel.nickname.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            nicknameErrorLabel.text = "닉네임을 입력해주세요."
-            nicknameErrorLabel.isHidden = false
-            isValid = false
-        } else {
-            nicknameErrorLabel.isHidden = true
-        }
-        
-        // 학교 선택
-        if viewModel.selectedSchool == nil {
-            schoolErrorLabel.text = "학교를 선택해주세요."
-            schoolErrorLabel.isHidden = false
-            isValid = false
-        } else {
-            schoolErrorLabel.isHidden = true
-        }
-        
-        return isValid
-    }
-    
     private func hideAllValidationErrors() {
         loginIdErrorLabel.isHidden = true
         passwordErrorLabel.isHidden = true
         confirmPasswordErrorLabel.isHidden = true
         nicknameErrorLabel.isHidden = true
         schoolErrorLabel.isHidden = true
-    }
-    
-    private func showValidationError(field: String, message: String) {
-        switch field {
-        case "loginId":
-            loginIdErrorLabel.text = message
-            loginIdErrorLabel.isHidden = false
-        case "password":
-            passwordErrorLabel.text = message
-            passwordErrorLabel.isHidden = false
-        case "confirmPassword":
-            confirmPasswordErrorLabel.text = message
-            confirmPasswordErrorLabel.isHidden = false
-        case "nickname":
-            nicknameErrorLabel.text = message
-            nicknameErrorLabel.isHidden = false
-        case "school":
-            schoolErrorLabel.text = message
-            schoolErrorLabel.isHidden = false
-        default:
-            break
-        }
     }
 }
 

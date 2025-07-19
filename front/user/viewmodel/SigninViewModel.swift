@@ -13,11 +13,9 @@ class SigninViewModel {
     // Callbacks
     var onSigninSuccess: ((AuthResponse) -> Void)?
     var onSigninFailure: ((String) -> Void)?
-    var onSchoolSearchSuccess: (([School]) -> Void)?
-    var onSchoolSearchFailure: ((String) -> Void)?
     
     // Validation callbacks
-    var onValidationError: ((String, String) -> Void)? // field, message
+    var onValidationError: ((String, String?) -> Void)? // (field, message or nil)
     var onValidationSuccess: (() -> Void)?
     
     // Input fields
@@ -37,12 +35,16 @@ class SigninViewModel {
         if loginId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             onValidationError?("loginId", "아이디를 입력해주세요")
             isValid = false
+        } else {
+            onValidationError?("loginId", nil)
         }
         
         // 비밀번호 검증
         if password.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             onValidationError?("password", "비밀번호를 입력해주세요")
             isValid = false
+        } else {
+            onValidationError?("password", nil)
         }
         
         // 비밀번호 확인 검증
@@ -52,18 +54,24 @@ class SigninViewModel {
         } else if password != confirmPassword {
             onValidationError?("confirmPassword", "비밀번호가 일치하지 않습니다")
             isValid = false
+        } else {
+            onValidationError?("confirmPassword", nil)
         }
         
         // 닉네임 검증
         if nickname.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             onValidationError?("nickname", "닉네임을 입력해주세요")
             isValid = false
+        } else {
+            onValidationError?("nickname", nil)
         }
         
         // 학교 선택 검증
         if selectedSchool == nil {
             onValidationError?("school", "학교를 선택해주세요")
             isValid = false
+        } else {
+            onValidationError?("school", nil)
         }
         
         if isValid {
@@ -119,22 +127,6 @@ class SigninViewModel {
                 } else {
                     self?.onSigninFailure?(error.localizedDescription)
                 }
-            }
-        }
-    }
-    
-    func searchSchools(query: String) {
-        guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            onSchoolSearchSuccess?([])
-            return
-        }
-        
-        signinService.searchSchools(query: query) { [weak self] result in
-            switch result {
-            case .success(let schools):
-                self?.onSchoolSearchSuccess?(schools)
-            case .failure(let error):
-                self?.onSchoolSearchFailure?(error.localizedDescription)
             }
         }
     }

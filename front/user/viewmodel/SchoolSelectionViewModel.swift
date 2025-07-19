@@ -8,7 +8,7 @@
 import Foundation
 
 class SchoolSelectionViewModel {
-    private let baseURL = "http://unstoppableworm.iptime.org"
+    private let signinService = SigninService()
     
     // Callbacks
     var onSchoolSearchSuccess: (([School]) -> Void)?
@@ -20,38 +20,13 @@ class SchoolSelectionViewModel {
             return
         }
         
-        let request = SchoolSearchRequest(domain: "school", query: query)
-        let url = URL(string: "\(baseURL)/index/school")!
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        do {
-            urlRequest.httpBody = try JSONEncoder().encode(request)
-        } catch {
-            onSchoolSearchFailure?("요청 데이터 인코딩 실패")
-            return
-        }
-        
-        URLSession.shared.dataTask(with: urlRequest) { [weak self] data, response, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    self?.onSchoolSearchFailure?(error.localizedDescription)
-                    return
-                }
-                
-                guard let data = data else {
-                    self?.onSchoolSearchFailure?("데이터가 없습니다")
-                    return
-                }
-                
-                do {
-                    let response = try JSONDecoder().decode(SchoolListResponse.self, from: data)
-                    self?.onSchoolSearchSuccess?(response.schoolDtos)
-                } catch {
-                    self?.onSchoolSearchFailure?(error.localizedDescription)
-                }
+        signinService.searchSchools(query: query) { [weak self] result in
+            switch result {
+            case .success(let schools):
+                self?.onSchoolSearchSuccess?(schools)
+            case .failure(let error):
+                self?.onSchoolSearchFailure?(error.localizedDescription)
             }
-        }.resume()
+        }
     }
 } 
