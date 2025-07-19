@@ -42,7 +42,6 @@ struct PostListScreen: View {
             PostCreateScreen(boardId: boardId)
         }
         .onAppear {
-            print("hi")
             viewModel.fetchPosts(boardId: boardId)
         }
     }
