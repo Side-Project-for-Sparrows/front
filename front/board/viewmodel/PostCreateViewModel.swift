@@ -19,7 +19,7 @@ class PostCreateViewModel: ObservableObject {
     func submitPost(boardId: Int, completion: @escaping (Bool) -> Void) {
         let boundary = UUID().uuidString
         
-        guard let userId = AppConfig.shared.currentUser?.id else{
+        guard let userId = AppConfig.shared.getUserSession()?.id else{
             SessionManager.shared.logout()
             return
         }

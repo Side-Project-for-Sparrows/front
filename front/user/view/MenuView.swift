@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+=======
+//
+//  MenuView.swift
+//  front
+//
+//  Created by Quadroue4 on 7/19/25.
+//
+
+import Foundation
+>>>>>>> c8b170f (feat: route)
 import UIKit
 
 class MenuView: UICollectionViewController, UICollectionViewDelegateFlowLayout {
@@ -38,3 +49,4 @@ class MenuView: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         return CGSize(width: 100, height: 100)
     }
 } 
+

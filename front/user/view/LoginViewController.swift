@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import KeychainAccess
+import SwiftUI
 
 class LoginViewController: UIViewController {
     
@@ -24,19 +24,9 @@ class LoginViewController: UIViewController {
     }
     
     private func bindViewModel() {
-        viewModel.onLoginSuccess = { [weak self] response in
-            print("로그인 성공, 토큰:", response.id)
-            print("로그인 성공, 토큰:", response.userInfo)
-            // 로그인 정보 저장
-            // accessToken, refreshToken은 Keychain, userId, nickname, userType은 UserDefaults
-            let keychain = Keychain(service: Bundle.main.bundleIdentifier ?? "sparrows")
-                .accessibility(.afterFirstUnlock)
-            keychain["accessToken"] = response.userInfo.accessToken
-            keychain["refreshToken"] = response.userInfo.refreshToken
-            UserDefaults.standard.set(response.userInfo.id, forKey: "userId")
-            UserDefaults.standard.set(response.userInfo.nickname, forKey: "nickname")
-            UserDefaults.standard.set(response.userInfo.userType, forKey: "userType")
+        viewModel.onLoginSuccess = { [weak self] in
             self?.showAlert(message: "로그인 성공, 나중에 alert 지우고 메인 페이지로 이동하게 연결하면 됨.")
+            self?.goToMenuView()
         }
         
         viewModel.onLoginFailure = { [weak self] errorMessage in
@@ -62,6 +52,13 @@ class LoginViewController: UIViewController {
     
     }
     
+    private func goToMenuView() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let menuVC = storyboard.instantiateViewController(withIdentifier: "MenuView") as? MenuView {
+            self.navigationController?.pushViewController(menuVC, animated: true)
+        }
+    }
+    
     @IBAction func loginButtonTapped(_ sender: UIButton) {
         viewModel.id = idTextField.text ?? ""
         viewModel.pw = pwTextField.text ?? ""
@@ -81,6 +78,5 @@ class LoginViewController: UIViewController {
             present(signinVC, animated: true)
         }
     }
-
 }
 

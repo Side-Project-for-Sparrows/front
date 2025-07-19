@@ -11,12 +11,10 @@ import UIKit
 class SessionManager: ObservableObject {
     static let shared = SessionManager()
 
-    @Published var isLoggedIn: Bool = AppConfig.shared.currentUser != nil
+    @Published var isLoggedIn: Bool = AppConfig.shared.getUserSession() != nil
 
     func logout() {
-        AppConfig.shared.currentUser = nil
-        UserDefaults.standard.removeObject(forKey: "authToken")
-        UserDefaults.standard.removeObject(forKey: "userId")
+        AppConfig.shared.deleteUserSession()
         // 🔴 반드시 메인 쓰레드에서 변경
         DispatchQueue.main.async {
             self.isLoggedIn = false
@@ -24,10 +22,9 @@ class SessionManager: ObservableObject {
         }
     }
 
-    func login(user: UserSession) {
-        AppConfig.shared.currentUser = user
-        UserDefaults.standard.set(user.authToken, forKey: "authToken")
-        UserDefaults.standard.set(user.id, forKey: "userId")
+    func login(session: UserSession) {
+        AppConfig.shared.setUerSession(session: session)
+    
         DispatchQueue.main.async {
             self.isLoggedIn = true
         }

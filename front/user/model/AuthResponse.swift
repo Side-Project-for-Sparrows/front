@@ -15,4 +15,4 @@ struct UserInfo: Decodable {
     let point: Int
     let accessToken: String
     let refreshToken: String
-} 
+}

@@ -6,14 +6,13 @@
 //
 
 import Foundation
+import KeychainAccess
 
 class AppConfig {
     static let shared = AppConfig()
-    
+
     let baseURL: String
-    
-    var currentUser: UserSession?
-    
+        
     private init() {
         #if DEBUG
         self.baseURL = "http://unstoppableworm.iptime.org" // 실서버
@@ -23,12 +22,69 @@ class AppConfig {
 
         #endif
     }
+    
+    public func setUerSession(session: UserSession){
+        let keychain = Keychain(service: Bundle.main.bundleIdentifier ?? "sparrows")
+            .accessibility(.afterFirstUnlock)
+        keychain["accessToken"] = session.accessToken
+        keychain["refreshToken"] = session.refreshToken
+        UserDefaults.standard.set(session.id, forKey: "userId")
+        UserDefaults.standard.set(session.nickname, forKey: "nickname")
+    }
+    
+    public func deleteUserSession() {
+        let keychain = Keychain(service: Bundle.main.bundleIdentifier ?? "sparrows")
+        
+        // Keychain 값 삭제
+        do {
+            try keychain.remove("accessToken")
+            try keychain.remove("refreshToken")
+        } catch let error {
+            print("❌ Keychain 삭제 오류: \(error)")
+        }
+        
+        // UserDefaults 값 삭제
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: "userId")
+        defaults.removeObject(forKey: "nickname")
+        defaults.removeObject(forKey: "userType")
+    }
+
+    
+    public func getUserSession() -> UserSession? {
+        let keychain = Keychain(service: Bundle.main.bundleIdentifier ?? "sparrows")
+        
+        guard
+            let accessToken = keychain["accessToken"],
+            let refreshToken = keychain["refreshToken"],
+            let userId = UserDefaults.standard.object(forKey: "userId") as? Int64,
+            let nickname = UserDefaults.standard.string(forKey: "nickname")
+            //let userType = UserDefaults.standard.string(forKey: "userType")
+        else {
+            return nil
+        }
+        
+        let session = UserSession(
+            id: userId,
+            nickname: nickname,
+            email: "", // 이메일을 저장하고 있지 않다면 빈 문자열 또는 추후 추가
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        )
+        
+        return session
+    }
+    
+    public func updateAccessToken(token: String){
+        let keychain = Keychain(service: Bundle.main.bundleIdentifier ?? "sparrows")
+        keychain["accessToken"] = token
+    }
 }
 
 struct UserSession {
     let id: Int64
-    let name: String
+    let nickname: String
     let email: String
-    let authToken: String
+    let accessToken: String
     let refreshToken: String
 }

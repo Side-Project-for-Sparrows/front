@@ -14,7 +14,7 @@ class BoardListViewModel: ObservableObject {
     @Published var error: String? = nil
 
     func fetchBoards() {
-        guard let userId = AppConfig.shared.currentUser?.id else {
+        guard let userId = AppConfig.shared.getUserSession()?.id else {
             SessionManager.shared.logout()
             return
         }

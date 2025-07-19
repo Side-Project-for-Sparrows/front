@@ -21,7 +21,7 @@ class TokenRefresher {
         isRefreshing = true
         waitingHandlers.append(completion)
 
-        guard let refreshToken = AppConfig.shared.currentUser?.refreshToken else {
+        guard let refreshToken = AppConfig.shared.getUserSession()?.refreshToken else {
             self.failAndLogout()
             return
         }
@@ -50,15 +50,8 @@ class TokenRefresher {
     }
     
     private func refreshAcceessToken(newAccessToken: String){
-        if var currentUser = AppConfig.shared.currentUser {
-            let updatedUser = UserSession(
-                id: currentUser.id,
-                name: currentUser.name,
-                email: currentUser.email,
-                authToken: newAccessToken,
-                refreshToken: currentUser.refreshToken
-            )
-            AppConfig.shared.currentUser = updatedUser
+        if var currentUser = AppConfig.shared.getUserSession() {
+            AppConfig.shared.updateAccessToken(token: newAccessToken)
             self.complete(success: true)
         } else {
             self.failAndLogout()

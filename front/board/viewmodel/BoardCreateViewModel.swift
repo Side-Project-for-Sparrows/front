@@ -21,7 +21,7 @@ class BoardCreateViewModel: ObservableObject {
             return
         }
         
-        guard let userId = AppConfig.shared.currentUser?.id else {
+        guard let userId = AppConfig.shared.getUserSession()?.id else {
             //submitError = "로그인이 필요합니다"
             //completion(false)
             //SessionManager.shared.logout() // ✅ 즉시 로그인 화면으로 리다이렉트

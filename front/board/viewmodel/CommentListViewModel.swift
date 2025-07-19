@@ -44,7 +44,7 @@ class CommentListViewModel: ObservableObject {
     
     func writeComment(postId: Int64, content: String) {
         
-        guard let userId = AppConfig.shared.currentUser?.id else { return }
+        guard let userId = AppConfig.shared.getUserSession()?.id else { return }
         
         guard let url = URL(string: "\(AppConfig.shared.baseURL)/post/comment") else { return }
         

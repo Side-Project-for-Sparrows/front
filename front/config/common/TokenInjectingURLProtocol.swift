@@ -27,7 +27,7 @@ class TokenInjectingURLProtocol: URLProtocol {
         }
 
         // ✅ Authorization 헤더 삽입 (수정된 부분)
-        if let token = AppConfig.shared.currentUser?.authToken {
+        if let token = AppConfig.shared.getUserSession()?.accessToken {
             mutableRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
 

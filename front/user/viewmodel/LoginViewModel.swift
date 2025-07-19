@@ -12,7 +12,7 @@ class LoginViewModel {
     var pw: String = ""
     
     // Output
-    var onLoginSuccess: ((AuthResponse) -> Void)?
+    var onLoginSuccess: (() -> Void)?
     var onLoginFailure: ((String) -> Void)?
     
     private let authService = AuthService()
@@ -55,7 +55,23 @@ class LoginViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    self?.onLoginSuccess?(response)
+                    let info = response.userInfo
+                    
+                    let session = UserSession(
+                        id: info.id,
+                        nickname: info.nickname,
+                        email: info.loginId,
+                        accessToken: info.accessToken,
+                        refreshToken: info.refreshToken
+                    )
+                    
+                    SessionManager.shared.login(session: session)
+                    
+                    print("로그인 성공 id:", info.id)
+                    print("로그인 성공 nickname:", info.nickname)
+                    print("로그인 성공 토큰:", info.accessToken)
+                    
+                    self?.onLoginSuccess?()
                 case .failure(let error):
                     self?.onLoginFailure?(error.localizedDescription)
                 }
