@@ -7,12 +7,11 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 class MenuView: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     let menuItems = [
-        (title: "메뉴1", segueIdentifier: "ShowMenu1"),
-        (title: "메뉴2", segueIdentifier: "ShowMenu2"),
-        (title: "메뉴3", segueIdentifier: "ShowMenu3")
+        (title: "게시판", segueIdentifier: "ShowBoardList")
     ]
 
     override func viewDidLoad() {
@@ -38,7 +37,16 @@ class MenuView: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     // MARK: - UICollectionViewDelegate
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let segueId = menuItems[indexPath.item].segueIdentifier
-        performSegue(withIdentifier: segueId, sender: self)
+        if segueId == "ShowBoardList" {
+            let boardListView = BoardListScreen()
+            let hostingVC = UIHostingController(rootView: boardListView)
+            if let nav = self.navigationController {
+                nav.pushViewController(hostingVC, animated: true)
+            } else {
+                hostingVC.modalPresentationStyle = .fullScreen
+                self.present(hostingVC, animated: true, completion: nil)
+            }
+        }
     }
 
     // MARK: - UICollectionViewDelegateFlowLayout

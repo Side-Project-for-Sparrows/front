@@ -25,7 +25,6 @@ class LoginViewController: UIViewController {
     
     private func bindViewModel() {
         viewModel.onLoginSuccess = { [weak self] in
-            self?.showAlert(message: "로그인 성공, 나중에 alert 지우고 메인 페이지로 이동하게 연결하면 됨.")
             self?.goToMenuView()
         }
         
@@ -55,7 +54,9 @@ class LoginViewController: UIViewController {
     private func goToMenuView() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let menuVC = storyboard.instantiateViewController(withIdentifier: "MenuView") as? MenuView {
-            self.navigationController?.pushViewController(menuVC, animated: true)
+            let nav = UINavigationController(rootViewController: menuVC)
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true, completion: nil)
         }
     }
     
