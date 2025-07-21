@@ -15,9 +15,9 @@ class AppConfig {
         
     private init() {
         #if DEBUG
-        self.baseURL = "http://unstoppableworm.iptime.org" // 실서버
+        //self.baseURL = "http://unstoppableworm.iptime.org" // 실서버
 
-        //self.baseURL = "http://localhost:7080" // 로컬 개발용        #else
+        self.baseURL = "http://localhost:7080" // 로컬 개발용        #else
         //self.baseURL = "http://unstoppableworm.iptime.org" // 실서버
 
         #endif

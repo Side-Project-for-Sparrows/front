@@ -14,4 +14,5 @@ struct BoardSearchResponseDto: Codable, Identifiable {
     let schoolId: Int
     let isPublic: Bool
     let description: String
+    let isBoss: Bool
 }
