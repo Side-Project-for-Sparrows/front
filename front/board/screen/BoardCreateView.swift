@@ -9,10 +9,12 @@ import Foundation
 import SwiftUI
 import PhotosUI
 
-struct BoardCreateScreen: View {
+struct BoardCreateView: View {
     @Environment(\.dismiss) private var dismiss
 
     @StateObject private var viewModel = BoardCreateViewModel()
+    
+    let onCreated : (() -> Void)
 
     var body: some View {
         NavigationView {
@@ -33,6 +35,7 @@ struct BoardCreateScreen: View {
                 Button(action: {
                     viewModel.submitBoard() { success in
                         if success {
+                            onCreated()
                             dismiss()
                         }
                     }

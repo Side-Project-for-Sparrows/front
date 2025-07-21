@@ -38,7 +38,7 @@ class MenuView: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let segueId = menuItems[indexPath.item].segueIdentifier
         if segueId == "ShowBoardList" {
-            let boardListView = BoardListScreen()
+            let boardListView = BoardMainView()
             let hostingVC = UIHostingController(rootView: boardListView)
             if let nav = self.navigationController {
                 nav.pushViewController(hostingVC, animated: true)
